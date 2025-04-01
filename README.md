@@ -1,5 +1,10 @@
 
-DESCRIPTION: QAP3 Database CD Collection. This program will create a database called cdcollection
+DESCRIPTION: Everything great about the QAP3 now in a browser!
+             Instructions: 
+             In the project folder in the terminal enter 'npm install', followed by 'npm start'.
+             Open browser window to 'http://localhost:3000/'
+
+             QAP3 Database CD Collection. This program will create a database called cdcollection
              in MongoDB and with use of Thunder or equivalent API client for testing will allow data to be retieved, added, modified or deleated. 
              INSTRUCTIONS: 
              Make sure MongoDB is installed.
