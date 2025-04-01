@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CD Collection Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    
+    .operation-container {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    
+    .form-group {
+      margin-bottom: 10px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    button:hover {
+      background-color: #45a049;
+    }
+    
+    .error-message {
+      color: red;
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid red;
+      border-radius: 4px;
+      display: none;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    
+    th {
+      background-color: #f2f2f2;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    
+    .input-fields {
+      display: none;
+    }
+    
+    .active-fields {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>CD Collection Manager</h1>
+  
+  <div class="operation-container">
+    <div class="form-group">
+      <label>Select Operation:</label>
+      <div>
+        <input type="radio" id="retrieve" name="operation" value="retrieve" checked>
+        <label for="retrieve">Retrieve CDs</label>
+        
+        <input type="radio" id="add" name="operation" value="add">
+        <label for="add">Add CD</label>
+        
+        <input type="radio" id="update" name="operation" value="update">
+        <label for="update">Update CD</label>
+        
+        <input type="radio" id="delete" name="operation" value="delete">
+        <label for="delete">Delete CD</label>
+      </div>
+    </div>
+    
+    <!-- Retrieve Options -->
+    <div id="retrieve-fields" class="input-fields active-fields">
+      <div class="form-group">
+        <label for="r-artist">Filter by Artist (optional):</label>
+        <input type="text" id="r-artist" placeholder="e.g. Linkin Park">
+      </div>
+      
+      <div class="form-group">
+        <label for="r-genre">Filter by Genre (optional):</label>
+        <input type="text" id="r-genre" placeholder="e.g. ROCK">
+      </div>
+      
+      <div class="form-group">
+        <label for="r-before">CDs Released Before Year (optional):</label>
+        <input type="number" id="r-before" placeholder="e.g. 2000">
+      </div>
+      
+      <div class="form-group">
+        <input type="checkbox" id="r-titles-only">
+        <label for="r-titles-only">Show Titles Only</label>
+      </div>
+    </div>
+    
+    <!-- Add Options -->
+    <div id="add-fields" class="input-fields">
+      <div class="form-group">
+        <label for="a-title">Title:</label>
+        <input type="text" id="a-title" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="a-artist">Artist:</label>
+        <input type="text" id="a-artist" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="a-genre">Genre:</label>
+        <input type="text" id="a-genre" placeholder="RAP, POP, ROCK, COUNTRY, DANCE, WORLD, BLUES, JAZZ, CLASSICAL" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="a-year">Year:</label>
+        <input type="number" id="a-year" min="1000" max="9999" required>
+      </div>
+    </div>
+    
+    <!-- Update Options -->
+    <div id="update-fields" class="input-fields">
+      <div class="form-group">
+        <label for="u-id">CD ID:</label>
+        <input type="number" id="u-id" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="u-title">New Title (optional):</label>
+        <input type="text" id="u-title">
+      </div>
+      
+      <div class="form-group">
+        <label for="u-artist">New Artist (optional):</label>
+        <input type="text" id="u-artist">
+      </div>
+      
+      <div class="form-group">
+        <label for="u-genre">New Genre (optional):</label>
+        <input type="text" id="u-genre" placeholder="RAP, POP, ROCK, COUNTRY, DANCE, WORLD, BLUES, JAZZ, CLASSICAL">
+      </div>
+      
+      <div class="form-group">
+        <label for="u-year">New Year (optional):</label>
+        <input type="number" id="u-year" min="1000" max="9999">
+      </div>
+    </div>
+    
+    <!-- Delete Options -->
+    <div id="delete-fields" class="input-fields">
+      <div class="form-group">
+        <label for="d-id">CD ID:</label>
+        <input type="number" id="d-id" required>
+      </div>
+    </div>
+    
+    <button id="submit-btn">Submit</button>
+    
+    <div id="error-display" class="error-message"></div>
+  </div>
+  
+  <div id="results-container">
+    <h2>Results</h2>
+    <table id="results-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Artist</th>
+          <th>Genre</th>
+          <th>Year</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Results will be displayed here -->
+      </tbody>
+    </table>
+  </div>
+  
+  <script>
+    // Get elements
+    const operationRadios = document.querySelectorAll('input[name="operation"]');
+    const retrieveFields = document.getElementById('retrieve-fields');
+    const addFields = document.getElementById('add-fields');
+    const updateFields = document.getElementById('update-fields');
+    const deleteFields = document.getElementById('delete-fields');
+    const submitBtn = document.getElementById('submit-btn');
+    const errorDisplay = document.getElementById('error-display');
+    const resultsTable = document.getElementById('results-table').getElementsByTagName('tbody')[0];
+    
+    // Show/hide input fields based on selected operation
+    operationRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        // Hide all input fields
+        retrieveFields.classList.remove('active-fields');
+        addFields.classList.remove('active-fields');
+        updateFields.classList.remove('active-fields');
+        deleteFields.classList.remove('active-fields');
+        
+        // Show the selected input fields
+        const selectedOperation = document.querySelector('input[name="operation"]:checked').value;
+        document.getElementById(`${selectedOperation}-fields`).classList.add('active-fields');
+      });
+    });
+    
+    // Handle form submission
+    submitBtn.addEventListener('click', async () => {
+      // Clear previous error messages and results
+      errorDisplay.style.display = 'none';
+      errorDisplay.textContent = '';
+      
+      try {
+        const operation = document.querySelector('input[name="operation"]:checked').value;
+        let response;
+        
+        switch (operation) {
+          case 'retrieve':
+            await handleRetrieve();
+            break;
+          case 'add':
+            await handleAdd();
+            break;
+          case 'update':
+            await handleUpdate();
+            break;
+          case 'delete':
+            await handleDelete();
+            break;
+        }
+      } catch (error) {
+        displayError(error.message);
+      }
+    });
+    
+    // Handle retrieve operation
+    async function handleRetrieve() {
+      const artist = document.getElementById('r-artist').value.trim();
+      const genre = document.getElementById('r-genre').value.trim();
+      const before = document.getElementById('r-before').value.trim();
+      const titlesOnly = document.getElementById('r-titles-only').checked;
+      
+      // Build query string
+      let queryParams = [];
+      if (artist) queryParams.push(`artist=${encodeURIComponent(artist)}`);
+      if (genre) queryParams.push(`genre=${encodeURIComponent(genre)}`);
+      if (before) queryParams.push(`before=${encodeURIComponent(before)}`);
+      if (titlesOnly) queryParams.push('fields=title');
+      
+      const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
+      
+      try {
+        const response = await fetch(`/cds${queryString}`);
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || data.message || 'Unknown error occurred');
+        }
+        
+        displayResults(data, titlesOnly);
+      } catch (error) {
+        displayError(error.message);
+      }
+    }
+    
+    // Handle add operation
+    async function handleAdd() {
+      const title = document.getElementById('a-title').value.trim();
+      const artist = document.getElementById('a-artist').value.trim();
+      const genre = document.getElementById('a-genre').value.trim();
+      const year = document.getElementById('a-year').value.trim();
+      
+      // Validate required fields
+      if (!title || !artist || !genre || !year) {
+        throw new Error('All fields are required for adding a CD');
+      }
+      
+      try {
+        const response = await fetch('/cds', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title,
+            artist,
+            genre,
+            year: parseInt(year)
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || data.details || 'Unknown error occurred');
+        }
+        
+        displayResults([data]);
+        alert('CD added successfully!');
+      } catch (error) {
+        displayError(error.message);
+      }
+    }
+    
+    // Handle update operation
+    async function handleUpdate() {
+      const id = document.getElementById('u-id').value.trim();
+      const title = document.getElementById('u-title').value.trim();
+      const artist = document.getElementById('u-artist').value.trim();
+      const genre = document.getElementById('u-genre').value.trim();
+      const year = document.getElementById('u-year').value.trim();
+      
+      // Validate required fields
+      if (!id) {
+        throw new Error('CD ID is required for updating');
+      }
+      
+      // Check if at least one field to update is provided
+      if (!title && !artist && !genre && !year) {
+        throw new Error('At least one field to update must be provided');
+      }
+      
+      const updateData = {};
+      if (title) updateData.title = title;
+      if (artist) updateData.artist = artist;
+      if (genre) updateData.genre = genre;
+      if (year) updateData.year = parseInt(year);
+      
+      try {
+        const response = await fetch(`/cds/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updateData)
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || data.details || 'Unknown error occurred');
+        }
+        
+        displayResults([data]);
+        alert('CD updated successfully!');
+      } catch (error) {
+        displayError(error.message);
+      }
+    }
+    
+    // Handle delete operation
+    async function handleDelete() {
+      const id = document.getElementById('d-id').value.trim();
+      
+      // Validate required fields
+      if (!id) {
+        throw new Error('CD ID is required for deletion');
+      }
+      
+      if (!confirm(`Are you sure you want to delete CD #${id}?`)) {
+        return;
+      }
+      
+      try {
+        const response = await fetch(`/cds/${id}`, {
+          method: 'DELETE'
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'Unknown error occurred');
+        }
+        
+        displayResults([data]);
+        alert('CD deleted successfully!');
+      } catch (error) {
+        displayError(error.message);
+      }
+    }
+    
+    // Display error message
+    function displayError(message) {
+      errorDisplay.textContent = `Error: ${message}`;
+      errorDisplay.style.display = 'block';
+    }
+    
+    // Display results in the table
+    function displayResults(data, titlesOnly = false) {
+      // Clear previous results
+      resultsTable.innerHTML = '';
+      
+      if (!data || data.length === 0) {
+        const row = resultsTable.insertRow();
+        const cell = row.insertCell(0);
+        cell.colSpan = 5;
+        cell.textContent = 'No results found';
+        return;
+      }
+      
+      // Create table rows
+      data.forEach(cd => {
+        const row = resultsTable.insertRow();
+        
+        if (titlesOnly) {
+          // For title-only view
+          const cell = row.insertCell(0);
+          cell.colSpan = 5;
+          cell.textContent = cd.title;
+        } else {
+          // For full CD view
+          row.insertCell(0).textContent = cd._id || '';
+          row.insertCell(1).textContent = cd.title || '';
+          row.insertCell(2).textContent = cd.artist || '';
+          row.insertCell(3).textContent = cd.genre || '';
+          row.insertCell(4).textContent = cd.year || '';
+        }
+      });
+    }
+    
+    // Load CDs on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      handleRetrieve();
+    });
+  </script>
+</body>
+</html>
