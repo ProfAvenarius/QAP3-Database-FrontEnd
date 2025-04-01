@@ -7,6 +7,7 @@
 
 const express = require('express');
 const app = express();
+app.use(express.static('public'));
 const PORT = 3000;
 app.use(express.json());
 const mongoose = require('mongoose');
@@ -66,6 +67,11 @@ let cds = [
   { _id: 9, title: 'American Idiot', artist: 'Green Day', genre: 'ROCK', year: 2004 },
   { _id: 10, title: 'Good Kid, M.A.A.D City', artist: 'Kendrick Lamar', genre: 'RAP', year: 2012 }
 ];
+
+// Serve the HTML file
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/index.html');
+});
 
 
 async function seedCollection() {  //This will create and populate the collection database in MongoDB with
